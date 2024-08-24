@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Board Layout Program</title>
+  <link rel="stylesheet" href="static/style.css" />
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
+  <!--<script src="jquery-csv.js"></script>-->
+  <!--<script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>-->
+  <!--<script src="node_modules/requirejs/require.js"></script>-->
+  <!--<script src="node_modules/papaparse/papaparse.js"></script>-->
+</head>
+
+<body onLoad="init()">
+  <nav class="navbar">
+    <div class="nav-heading-container">
+      <span class="nav-heading">Toe Board Layout Tool</span>
+    </div>
+    <div class="navbar-buttons">
+      <div class="navbar-button" id="file-navbar-button">
+        File
+        <div class="dropdown-menu" id="file-dropdown-menu">
+          <div id="import-csv-button" class="dropdown-button">Import CSV</div>
+          <div class="dropdown-button">Import From Excel</div>
+          <div id="export-csv-button" class="dropdown-button">Export to CSV</div>
+          <div class="dropdown-button">Print Results</div>
+        </div>
+      </div>
+      <div class="navbar-button" id="settings-navbar-button">
+        Settings
+        <div class="dropdown-menu" id="settings-dropdown-menu">
+          <div class="dropdown-button" id="clear-all-button">clear all</div>
+        </div>
+      </div>
+      <div class="navbar-button" id="help-navbar-button">
+        Help
+        <div class="dropdown-menu" id="help-dropdown-menu">
+          <div class="dropdown-button" id="help-button-1">How to use</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div id="section-layout">
+    <div class="section-div" id="info-section">
+      <fieldset id="toeBoardInformation">
+        <legend>Toe Board Information</legend>
+        <label for="jobName" id="jobNameLabel">Job Name:</label>
+        <input type="text" id="jobName" name="jobName" /><br />
+        <label for="rankName" id="rankNameLabel">Rank Name:</label>
+        <input type="text" id="rankName" name="rankName" /><br />
+        <label for="sideRoom" class="inline-label" id="sideRoomLabel">Room on Sides:</label>
+        <input type="text" id="sideRoom" name="sideRoom" placeholder="optional" />
+        <label for="endRoom" class="inline-label" id="endRoomLabel">Room on Ends:</label>
+        <input type="text" id="endRoom" name="endRoom" placeholder="optional" /><br />
+
+        <input type="radio" id="oneRow" name="rowNum" value="oneRow" />
+        <label for="oneRow" id="oneRowLabel">One Row</label>
+        <input type="radio" id="twoRows" name="rowNum" value="twoRows" checked />
+        <label for="twoRows" id="twoRowsLabel">Two Rows</label><br />
+        <input type="checkbox" id="woodPipes" name="woodPipes" />
+        <label for="woodPipes" id="woodPipesLabel">Wood Pipes</label><br />
+
+        <label for="woodDepth1" id="woodDepth1Label">Wood Depth 1: </label>
+        <input type="text" id="woodDepth1" name="woodDepth1" disabled />
+        <label for="woodDepth2" id="woodDepth2Label">Wood Depth 2: </label>
+        <input type="text" id="woodDepth2" name="woodDepth2" disabled /><br />
+        <input type="checkbox" id="singleBass" name="singleBass" onclick="onBassPipesClick()" />
+        <label for="singleBass" id="singleBassLabel">Single Row of Bass Pipes</label><br />
+        <label for="bassNum" id="bassNumLabel"># of Bass Pipes: </label>
+        <input type="text" id="bassNum" name="bassNum" disabled />
+      </fieldset>
+    </div>
+
+    <div class="section-div" id="result-section">
+      <fieldset id="toeBoardResult">
+        <legend>Results</legend>
+        <table id="result-table">
+          <tr>
+            <th>Pipe Num</th>
+            <th>Y Dist</th>
+          </tr>
+        </table>
+        <div id="result-side-sections">
+          <div id="result-side-section-1">
+            <p class="result-info-text" id="row-one-label">Row One:</p>
+            <p class="result-info-text" id="row-two-label">Row Two:</p>
+            <p class="result-info-text" id="middle-row-label">Middle Row:</p>
+            <p class="result-info-text" id="bass-pipes-label">Bass Pipes:</p>
+            <p class="result-info-text" id="x-distance-label">X Distance:</p>
+            <p class="result-info-text" id="y-distance-label">Y Distance:</p>
+            <p class="result-info-text" id="distance-added-label">
+              Distance Added:
+            </p>
+            <p class="result-info-text" id="sides-label">Sides:</p>
+            <p class="result-info-text" id="ends-label">Ends:</p>
+          </div>
+          <div id="result-side-section-2">
+            <p class="result-info-text" id="total-length-label">
+              Total Length:
+            </p>
+            <div class="plus-minus-buttons">
+              <button id="minus-length" class="plus-minus-button">-</button>
+              <button id="plus-length" class="plus-minus-button">+</button>
+            </div>
+            <p class="result-info-text" id="total-width-label">
+              Total Width:
+            </p>
+            <div class="plus-minus-buttons">
+              <button id="minus-width" class="plus-minus-button">-</button>
+              <button id="plus-width" class="plus-minus-button">+</button>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="section-div" id="size-section">
+      <fieldset id="pipeInformation">
+        <legend>Pipe Information</legend>
+        <div class="pipe-section">
+          <table class="pipeTable" id="pipe-table">
+            <tr>
+              <th>Pipe Num</th>
+              <th>Body Size</th>
+            </tr>
+          </table>
+        </div>
+        <div class="pipe-right-section">
+          <button id="calc-button">Calculate</button>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <!--following div is the help menu-->
+  <div class="modal" id="help-modal">
+    <h1>Help Screen</h1>
+    <p>Thank you for accessing the help screen!</p>
+    <p>You can click anywhere outside of this window to close it.</p>
+    <h2>How to use</h2>
+    <h3>Step 1</h3>
+    <p>Input all of the diameters of the pipes in the Pipe Information section</p>
+    <h3>Step 2</h3>
+    <p>Click the calculate button</p>
+    <h3>Step 3</h3>
+    <p>If the pipes are not wood, reduce the width until you get close to your desired length.</p>
+    <p>if you go over your desired length, increase the width.</p>
+    <h3>Step 4</h3>
+    <p>Increase the length until you are at your desired size.</p>
+    <h3>Step 5</h3>
+    <p>You can print the results or save the results to a csv file.</p>
+  </div>
+
+  <div class="modal-blur" id="modal-blur"></div>
+  <script src="static/index.js"></script>
+</body>
+
+</html>
